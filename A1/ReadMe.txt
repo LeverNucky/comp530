@@ -7,7 +7,7 @@ Yifan Li (Yifan.Li)
 
 LRU Implementation Note:
 
-1) We use two maps and a list to represent LRU. The list contains all the keys in buffer. The first member of the list the
+1) We use two maps and a list to represent LRU. The list contains all the keys in buffer. The first member of the list is the
 most recently used one and the last one indicates the least recently used key. 
 2) When evicting, we first find the first page that is not pinned. Then we would evict that page
 anyway. We would further write back to disk if the page is dirty
