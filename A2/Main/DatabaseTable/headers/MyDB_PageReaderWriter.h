@@ -32,7 +32,7 @@ public:
 	void setType (MyDB_PageType toMe);
 	
 private:
-
+	MyDB_PageType myPageType;
 	// ANYTHING ELSE YOU WANT HERE
 };
 
