@@ -33,6 +33,7 @@ public:
 	
 private:
 	MyDB_PageType myPageType;
+	MyDB_PageHandle myPageHandle;
 	// ANYTHING ELSE YOU WANT HERE
 };
 

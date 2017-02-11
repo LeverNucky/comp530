@@ -13,7 +13,7 @@ MyDB_PageType MyDB_PageReaderWriter :: getType () {
 }
 
 MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr iterateIntoMe) {
-	return make_shared<MyDB_PageRecIterator> (iterateIntoMe,myPage);
+	return make_shared<MyDB_PageRecIterator> (iterateIntoMe,myPageHandle);
 }
 
 void MyDB_PageReaderWriter :: setType (MyDB_PageType pT) {

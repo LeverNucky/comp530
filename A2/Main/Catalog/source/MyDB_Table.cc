@@ -32,7 +32,7 @@ map <string, MyDB_TablePtr> MyDB_Table :: getAllTables (MyDB_CatalogPtr fromMe) 
 	map <string, MyDB_TablePtr> returnVal;
 
 	// get all of the tables
-        vector <string> myTables;
+    vector <string> myTables;
 	fromMe->getStringList ("tables", myTables);
 
 	// extract each of the tables from the catalog
