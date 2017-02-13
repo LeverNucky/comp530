@@ -3,37 +3,45 @@
 #define PAGE_RW_C
 
 #include "MyDB_PageReaderWriter.h"
-#include "MyDB_PageRecIterator.h"
-#include <stdlib.h>
 
-#define HEADER_SIZE (sizeof (MyDB_PageType) + sizeof (size_t))
-#define GET_TYPE(ptr) (*((MyDB_PageType *) ptr))
-#define GET_OFFSET_UNTIL_END(ptr)  (*((size_t *) (((char *) ptr) + sizeof (MyDB_PageType))))
-
-MyDB_PageReaderWriter :: MyDB_PageReaderWriter (MyDB_TableReaderWriter &parent, MyDB_TablePtr myTable, MyDB_BufferManagerPtr myBuffer, int whichPage) {
-	myPage = myBuffer->getPage (myTable, whichPage);
-	pageSize = myBuffer->getPageSize ();
+MyDB_PageReaderWriter::MyDB_PageReaderWriter(MyDB_Table myTable, MyDB_BufferManagerPtr myBuffer){
+  this->myBuffer = myBuffer;
+  this->myTable = myTable;
+  myPage = myBuffer->getBytes();
+  readBytesLength = 0;
 }
 void MyDB_PageReaderWriter :: clear () {
-	GET_OFFSET_UNTIL_END (myPage->getBytes()) = HEADER_SIZE;
-	myPage->wroteBytes();
+  //TODO
+  
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {
-	return GET_TYPE(myPage->getBytes());
+	return myPageType;
 }
 
-MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr iterateIntoMe) {
-	return make_shared<MyDB_PageRecIterator> (iterateIntoMe,myPageHandle);
+MyDB_RecordIterator MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr myRec) {
+	MyDB_PageRecIterator myPageIt = make_shared <MyDB_PageRecIterator> (myRec, myPage);
+  return myPageIt;
 }
 
-void MyDB_PageReaderWriter :: setType (MyDB_PageType pT) {
-	GET_TYPE (myPage->getBytes()) = pT;
-	myPage->wroteBytes();
+void MyDB_PageReaderWriter :: setType (MyDB_PageType toMe) {
+  myPageType = toMe;
 }
 
-bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr) {
-	
+bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr appendMe) {
+  MyDB_RecordPtr myRec = make_shared <MyDB_Record> (myTable->getSchema());
+  void* curr_pos = myPage->getBytes();
+  size_t pageSize = myBuffer->getPageSize();
+  readBytesLength = 0;
+  while(readBytesLength < pageSize){
+    curr_pos = myRec->fromBinary(curr_pos);
+    readBytesLength += myRec->getBinarySize();
+  }
+  if(readBytesLength + appendMe->getBinarySize()+4 > pageSize){
+    return false;
+  } //+4
+  *(unsigned int*)curr_pos = appendMe->toBinary(curr_pos);
+  myPage->wroteBytes();
 	return true;
 }
 

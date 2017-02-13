@@ -4,12 +4,17 @@
 
 #include "MyDB_PageType.h"
 #include "MyDB_TableReaderWriter.h"
+#include "MyDB_Table.h"
+#include "MyDB_Record.h"
+#include "MyDB_RecordIterator"
 
 class MyDB_PageReaderWriter {
 
 public:
 
 	// ANY OTHER METHODS YOU WANT HERE
+	//constructor
+	MyDB_PageReaderWriter::MyDB_PageReaderWriter(MyDB_Table myTable);
 
 	// empties out the contents of this page, so that it has no records in it
 	// the type of the page is set to MyDB_PageType :: RegularPage
@@ -32,9 +37,15 @@ public:
 	void setType (MyDB_PageType toMe);
 	
 private:
-	MyDB_PageType myPageType;
-	MyDB_PageHandle myPageHandle;
+
 	// ANYTHING ELSE YOU WANT HERE
+	size_t readBytesLength;
+	size_t pageID;
+	MyDB_pageHandle myPage;
+	MyDB_bufferManagerPtr myBuffer;
+	MyDB_TablePtr myTable;
+	MyDB_PageType myPageType;
+
 };
 
 #endif
