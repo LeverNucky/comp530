@@ -87,29 +87,30 @@ int main () {
 	}
 
 	{
-		cout<<"test point 1\n";
+		
 		// load up the table supplier table from the catalog
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
 		map <string, MyDB_TablePtr> allTables = MyDB_Table :: getAllTables (myCatalog);
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
 		MyDB_TableReaderWriter supplierTable (allTables["supplier"], myMgr);
-		cout<<"test point 2\n";
+		
 		// now, go to the 37th page and iterate over it
 		MyDB_RecordPtr temp = supplierTable.getEmptyRecord ();
-		cout<<"test point 3\n";
+		
 		MyDB_RecordIteratorPtr myIter = supplierTable[36].getIterator (temp);
-		cout<<"test point 4\n";
+		
 		while (myIter->hasNext ()) {
-			cout<<"test point 4.5\n";
+			
 			myIter->getNext ();
 			cout << temp << "\n";
 		}
-		cout<<"test point 5\n";
+		
 		cout << "\n\n\n";
 	}
 
 	{
 		// load up the table supplier table from the catalog
+		cout<<"test point 6\n";
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
 		map <string, MyDB_TablePtr> allTables = MyDB_Table :: getAllTables (myCatalog);
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
@@ -121,10 +122,13 @@ int main () {
 
 		// there should be 10000 records
 		int counter = 0;
+		cout<<"test point 7\n";
 		while (myIter->hasNext ()) {
+			cout<<"test point 7.5\n";
 			myIter->getNext ();
 			counter++;
 	 	}
+	 	cout<<"test point 8\n";
 		QUNIT_IS_EQUAL (counter, 10000);
 	}
 		

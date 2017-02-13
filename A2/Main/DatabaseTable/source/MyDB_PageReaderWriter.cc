@@ -16,8 +16,8 @@ MyDB_PageReaderWriter :: MyDB_PageReaderWriter (MyDB_TableReaderWriter &parent, 
 }
 void MyDB_PageReaderWriter :: clear () {
 	GET_OFFSET_UNTIL_END (myPage->getBytes()) = HEADER_SIZE;
-	myPage->wroteBytes();
 	GET_TYPE(myPage->getBytes())=MyDB_PageType :: RegularPage;
+	myPage->wroteBytes();
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {

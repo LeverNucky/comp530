@@ -12,7 +12,10 @@ using namespace std;
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr forMe, MyDB_BufferManagerPtr myBuffer) {
 	this->myTable=forMe;
 	this->myBuffer=myBuffer;
-	init();
+	if (myTable->lastPage()==-1){
+		init();
+	}
+	
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t index) {

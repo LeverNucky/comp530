@@ -11,14 +11,19 @@ void MyDB_TableRecIterator :: getNext () {
 }
 
 bool MyDB_TableRecIterator :: hasNext () {
-	if (curPageIter->hasNext ())
+	if (curPageIter->hasNext ()){
+		cout<<"Inside test 2\n";
 		return true;
-
+	}
+	cout<<"Inside test 3\n";
+	//cout<<myTable->lastPage()<<endl;
 	while (curPageIter->hasNext()==false){
 		index++;
 		if (index>myTable->lastPage()){
 			return false;
 		}
+
+		//cout<<(myTable->lastPage())<<endl;
 		curPageIter = myParent[index].getIterator(myRec);
 	}
 	return true;
