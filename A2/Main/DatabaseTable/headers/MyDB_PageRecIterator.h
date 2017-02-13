@@ -4,6 +4,7 @@
 
 #include <memory>
 #include "MyDB_RecordIterator.h"
+#include "MyDB_Record.h"
 using namespace std;
 
 
@@ -18,18 +19,22 @@ public:
 
 	// put the contents of the next record in the file/page into the iterator record
 	// this should be called BEFORE the iterator record is first examined
-	void getNext() override;
+	void getNext();
 
 	// return true iff there is another record in the file/page
-	bool hasNext() override;
+	bool hasNext();
 
 	// destructor and contructor
-	
-	MyDB_PageRecIterator (MyDB_RecordPtr iterateIntoMe, MyDB_PageHandle myPageHandle); 
+	MyDB_PageRecIterator (MyDB_PageHandle myPage, MyDB_RecordPtr myRec) {};
 	~MyDB_PageRecIterator () {};
+
 private:
-	MyDB_PageHandle myPageHandle;
-	MyDB_RecordPtr myRecPtr;
+  int readBytes;
+  MyDB_RecordPtr myRec;
+  MyDB_pageHandle myPage;
+  MyDB_bufferManagerPtr myBuffer;
+  MyDB_TablePtr myTable;
+  MyDB_PageType myPageType;
 };
 
 #endif
