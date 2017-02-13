@@ -18,11 +18,11 @@ MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t index) {
 	shared_ptr <MyDB_PageReaderWriter> last;
 	while (index > myTable->lastPage ()) {
 		myTable->setLastPage (myTable->lastPage () + 1);
-		last = make_shared <MyDB_PageReaderWriter> (*this, myTable->lastPage ());
+		last = make_shared <MyDB_PageReaderWriter> (*this,myTable,myBuffer,myTable->lastPage ());
 		last->clear ();	
 	}
 
-	last = make_shared <MyDB_PageReaderWriter> (*this, index);
+	last = make_shared <MyDB_PageReaderWriter> (*this, myTable,myBuffer,index);
 	return *last;
 }
 
@@ -36,10 +36,10 @@ MyDB_PageReaderWriter &MyDB_TableReaderWriter :: last () {
 }
 
 void MyDB_TableReaderWriter :: append (MyDB_RecordPtr appendMe) {
-	shared_ptr <MyDB_PageReaderWriter> last = make_shared <MyDB_PageReaderWriter> (*this, myTable->lastPage ());
+	shared_ptr <MyDB_PageReaderWriter> last = make_shared <MyDB_PageReaderWriter> (*this,myTable,myBuffer, myTable->lastPage ());
 	if (!last->append (appendMe)) {
 		myTable->setLastPage (myTable->lastPage () + 1);
-		last = make_shared <MyDB_PageReaderWriter> (*this, myTable->lastPage ());
+		last = make_shared <MyDB_PageReaderWriter> (*this, myTable,myBuffer,myTable->lastPage ());
 		last->clear();
 		last->append(appendMe);
 	}
