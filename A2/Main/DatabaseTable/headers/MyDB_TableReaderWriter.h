@@ -1,4 +1,3 @@
-
 #ifndef TABLE_RW_H
 #define TABLE_RW_H
 
@@ -48,7 +47,9 @@ public:
     MyDB_PageReaderWriter &last ();
 
 private:
-
+	MyDB_TablePtr myTable;
+	MyDB_BufferManagerPtr myBuffer;
+	void init();
 	// ANYTHING YOU NEED HERE
 };
 

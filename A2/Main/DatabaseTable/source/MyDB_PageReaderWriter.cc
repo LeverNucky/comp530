@@ -11,17 +11,17 @@ MyDB_PageReaderWriter::MyDB_PageReaderWriter(MyDB_Table myTable, MyDB_BufferMana
   readBytesLength = 0;
 }
 void MyDB_PageReaderWriter :: clear () {
-  //TODO
-  
+	GET_OFFSET_UNTIL_END (myPage->getBytes()) = HEADER_SIZE;
+	GET_TYPE(myPage->getBytes())=MyDB_PageType :: RegularPage;
+	myPage->wroteBytes();
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {
 	return myPageType;
 }
 
-MyDB_RecordIterator MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr myRec) {
-	MyDB_PageRecIterator myPageIt = make_shared <MyDB_PageRecIterator> (myRec, myPage);
-  return myPageIt;
+MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr iterateIntoMe) {
+	return make_shared<MyDB_PageRecIterator> (*this,iterateIntoMe,myPage);
 }
 
 void MyDB_PageReaderWriter :: setType (MyDB_PageType toMe) {
@@ -29,6 +29,7 @@ void MyDB_PageReaderWriter :: setType (MyDB_PageType toMe) {
 }
 
 bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr appendMe) {
+<<<<<<< HEAD
   MyDB_RecordPtr myRec = make_shared <MyDB_Record> (myTable->getSchema());
   void* curr_pos = myPage->getBytes();
   size_t pageSize = myBuffer->getPageSize();
@@ -43,6 +44,19 @@ bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr appendMe) {
   *(unsigned int*)curr_pos = appendMe->toBinary(curr_pos);
   myPage->wroteBytes();
 	return true;
+=======
+	size_t recSize = appendMe->getBinarySize ();
+	void* ptr=myPage->getBytes();
+	if (recSize > pageSize-GET_OFFSET_UNTIL_END(ptr))
+		return false;
+	else{
+		appendMe->toBinary (((char *)ptr) + GET_OFFSET_UNTIL_END (ptr));
+		GET_OFFSET_UNTIL_END (ptr)+=recSize;
+		myPage->wroteBytes ();
+		return true;
+	}
+	
+>>>>>>> d7e32409dbbe8800778e26b12bf3757df30c8756
 }
 
 #endif

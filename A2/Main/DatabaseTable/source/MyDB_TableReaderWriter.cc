@@ -5,13 +5,17 @@
 #include <fstream>
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_TableReaderWriter.h"
+#include "MyDB_TableRecIterator.h"
 
 using namespace std;
 
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr forMe, MyDB_BufferManagerPtr myBuffer) {
 	this->myTable=forMe;
 	this->myBuffer=myBuffer;
-
+	if (myTable->lastPage()==-1){
+		init();
+	}
+	
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t index) {
@@ -27,7 +31,7 @@ MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t index) {
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
-	//TODO
+	
 	return make_shared <MyDB_Record> (myTable->getSchema());
 }
 
@@ -46,12 +50,13 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr appendMe) {
 }
 
 void MyDB_TableReaderWriter :: loadFromTextFile (string fileName) {
+	init();
 	ifstream fin;
 	fin.open(fileName);
-	String line;
+	string line;
 	MyDB_RecordPtr emptyRec = getEmptyRecord ();
 	while (getline (fin,line)) {
-		tempRec->fromString (line);		
+		emptyRec->fromString (line);		
 		append (emptyRec);
 	}
 	fin.close ();
@@ -59,8 +64,7 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string fileName) {
 }
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr iterateIntoMe) {
-	//TODO
-	return make_shared <MyDB_TableRecIterator> (*this,iterateIntoMe,myTable);
+	return make_shared <MyDB_TableRecIterator> (*this,myTable,iterateIntoMe);
 }
 
 void MyDB_TableReaderWriter :: writeIntoTextFile (string fileName) {
@@ -74,6 +78,11 @@ void MyDB_TableReaderWriter :: writeIntoTextFile (string fileName) {
 		recIter->getNext ();
 	}
 	fout.close ();
+}
+void MyDB_TableReaderWriter ::init(){
+	myTable->setLastPage (0);
+	shared_ptr <MyDB_PageReaderWriter> last = make_shared <MyDB_PageReaderWriter> (*this,myTable,myBuffer,0);
+	last->clear ();
 }
 
 #endif
