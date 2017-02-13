@@ -40,21 +40,40 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr appendMe) {
 	if (!last->append (appendMe)) {
 		myTable->setLastPage (myTable->lastPage () + 1);
 		last = make_shared <MyDB_PageReaderWriter> (*this, myTable->lastPage ());
-		last->clear ();
-		last->append (appendMe);
+		last->clear();
+		last->append(appendMe);
 	}
 }
 
 void MyDB_TableReaderWriter :: loadFromTextFile (string fileName) {
-	ifstream myFile(fileName);
+	ifstream fin;
+	fin.open(fileName);
+	String line;
+	MyDB_RecordPtr emptyRec = getEmptyRecord ();
+	while (getline (fin,line)) {
+		tempRec->fromString (line);		
+		append (emptyRec);
+	}
+	fin.close ();
+
 }
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr iterateIntoMe) {
 	//TODO
-	return make_shared <MyDB_TableRecIterator> (*this,iterateIntoMe);
+	return make_shared <MyDB_TableRecIterator> (*this,iterateIntoMe,myTable);
 }
 
-void MyDB_TableReaderWriter :: writeIntoTextFile (string) {
+void MyDB_TableReaderWriter :: writeIntoTextFile (string fileName) {
+	ofstream fout;
+	fout.open (fileName);
+
+	MyDB_RecordPtr emptyRec = getEmptyRecord ();	
+
+	MyDB_RecordIteratorPtr recIter= getIterator (emptyRec);
+	while (recIter->hasNext()) {
+		recIter->getNext ();
+	}
+	fout.close ();
 }
 
 #endif

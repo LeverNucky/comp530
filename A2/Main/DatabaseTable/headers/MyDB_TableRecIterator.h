@@ -26,7 +26,12 @@ public:
 	// destructor and contructor
 	MyDB_TableRecIterator () {};
 	~MyDB_TableRecIterator () {};
-
+private:
+	MyDB_TableReaderWriter &myParent;
+	MyDB_TablePtr myTable;
+    MyDB_RecordPtr myRec;
+    MyDB_RecordIteratorPtr curPageIter;
+	int index;
 };
 
 #endif

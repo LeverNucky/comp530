@@ -11,8 +11,6 @@ MyDB_PageRecIterator::MyDB_PageRecIterator (MyDB_RecordPtr iterateIntoMe, MyDB_P
     this->myPageHandle=myPageHandle;
 
 }
-
-
 void MyDB_PageRecIterator::getNext(){
     
 }
