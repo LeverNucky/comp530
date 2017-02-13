@@ -3,9 +3,13 @@
 #define PAGE_REC_ITER_H
 
 #include <memory>
-#include "MyDB_RecordIterator.h"
-using namespace std;
 
+#include "MyDB_RecordIterator.h"
+#include "MyDB_Record.h"
+#include "MyDB_PageHandle.h"
+#include "MyDB_PageReaderWriter.h"
+
+using namespace std;
 
 class MyDB_PageRecIterator;
 typedef shared_ptr <MyDB_PageRecIterator> MyDB_PageRecIteratorPtr;
@@ -25,11 +29,13 @@ public:
 
 	// destructor and contructor
 	
-	MyDB_PageRecIterator (MyDB_RecordPtr iterateIntoMe, MyDB_PageHandle myPageHandle); 
+	MyDB_PageRecIterator (MyDB_PageReaderWriter &myParent,MyDB_RecordPtr iterateIntoMe, MyDB_PageHandle myPageHandle); 
 	~MyDB_PageRecIterator () {};
 private:
-	MyDB_PageHandle myPageHandle;
-	MyDB_RecordPtr myRecPtr;
+	MyDB_PageReaderWriter myParent;
+	MyDB_PageHandle myPage;
+	MyDB_RecordPtr myRec;
+	size_t curPos;
 };
 
 #endif

@@ -25,14 +25,12 @@ bool MyDB_TableRecIterator :: hasNext () {
 	
 }
 
-MyDB_TableRecIterator :: MyDB_TableRecIterator (MyDB_TableReaderWriter &myParent,MyDB_RecordPtr myRec,MyDB_TablePtr myTable){
-	this->myParent=myParent;
+MyDB_TableRecIterator :: MyDB_TableRecIterator (MyDB_TableReaderWriter &myParent,MyDB_TablePtr forMe, MyDB_RecordPtr myRec):myParent(myParent){
 	this->myTable = myTable;
 	this->myRec = myRec;
-	index = 0;
-	curPageIter = myParent[0].getIterator (myRec);		
+	curPageIter = myParent[0].getIterator (myRec);
+	index = 0;	
 }
 
-MyDB_TableRecIterator :: ~MyDB_TableRecIterator () {}
 
 #endif

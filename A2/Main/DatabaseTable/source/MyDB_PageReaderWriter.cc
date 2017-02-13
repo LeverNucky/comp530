@@ -17,6 +17,7 @@ MyDB_PageReaderWriter :: MyDB_PageReaderWriter (MyDB_TableReaderWriter &parent, 
 void MyDB_PageReaderWriter :: clear () {
 	GET_OFFSET_UNTIL_END (myPage->getBytes()) = HEADER_SIZE;
 	myPage->wroteBytes();
+	GET_TYPE(myPage->getBytes())=MyDB_PageType :: RegularPage;
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {
@@ -24,7 +25,7 @@ MyDB_PageType MyDB_PageReaderWriter :: getType () {
 }
 
 MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr iterateIntoMe) {
-	return make_shared<MyDB_PageRecIterator> (iterateIntoMe,myPageHandle);
+	return make_shared<MyDB_PageRecIterator> (*this,iterateIntoMe,myPage);
 }
 
 void MyDB_PageReaderWriter :: setType (MyDB_PageType pT) {
@@ -32,9 +33,18 @@ void MyDB_PageReaderWriter :: setType (MyDB_PageType pT) {
 	myPage->wroteBytes();
 }
 
-bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr) {
+bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr appendMe) {
+	size_t recSize = appendMe->getBinarySize ();
+	void* ptr=myPage->getBytes();
+	if (recSize > pageSize-GET_OFFSET_UNTIL_END(ptr))
+		return false;
+	else{
+		appendMe->toBinary (((char *)ptr) + GET_OFFSET_UNTIL_END (ptr));
+		GET_OFFSET_UNTIL_END (ptr)+=recSize;
+		myPage->wroteBytes ();
+		return true;
+	}
 	
-	return true;
 }
 
 #endif

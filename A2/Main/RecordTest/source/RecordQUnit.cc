@@ -31,15 +31,18 @@ int main () {
 		// create a pair of tables with this schema
 		MyDB_TablePtr myTable = make_shared <MyDB_Table> ("coolTable", "coolTableFile", mySchema);
 		MyDB_TablePtr yourTable = make_shared <MyDB_Table> ("awesomeTable", "awesomeTableFile", mySchema);
-
+		
 		// and write to the catalog
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
+		
 		myTable->putInCatalog (myCatalog);
+		
 		yourTable->putInCatalog (myCatalog);
 		
 		cout << myTable << "\n";
 		cout << yourTable << "\n";
 		cout << "\n\n";
+		
 	}
 
 	{
@@ -50,11 +53,13 @@ int main () {
 			cout << e.second << "\n";
 		}
 		cout << "\n\n";
+		
 	}
 
 	{
 
 		// create a catalog
+		
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
 
 		// now make a schema
@@ -66,35 +71,40 @@ int main () {
 		mySchema->appendAtt (make_pair ("phone", make_shared <MyDB_StringAttType> ()));
 		mySchema->appendAtt (make_pair ("acctbal", make_shared <MyDB_DoubleAttType> ()));
 		mySchema->appendAtt (make_pair ("comment", make_shared <MyDB_StringAttType> ()));
-
+		
 		// use the schema to create a table
 		MyDB_TablePtr myTable = make_shared <MyDB_Table> ("supplier", "supplier.bin", mySchema);
+		
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
 		MyDB_TableReaderWriter supplierTable (myTable, myMgr);
-
+		
 		// load it from a text file
 		supplierTable.loadFromTextFile ("supplier.tbl");
-
+		
 		// put the supplier table into the catalog
 		myTable->putInCatalog (myCatalog);
+		
 	}
 
 	{
-
+		cout<<"test point 1\n";
 		// load up the table supplier table from the catalog
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
 		map <string, MyDB_TablePtr> allTables = MyDB_Table :: getAllTables (myCatalog);
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
 		MyDB_TableReaderWriter supplierTable (allTables["supplier"], myMgr);
-
+		cout<<"test point 2\n";
 		// now, go to the 37th page and iterate over it
 		MyDB_RecordPtr temp = supplierTable.getEmptyRecord ();
+		cout<<"test point 3\n";
 		MyDB_RecordIteratorPtr myIter = supplierTable[36].getIterator (temp);
+		cout<<"test point 4\n";
 		while (myIter->hasNext ()) {
+			cout<<"test point 4.5\n";
 			myIter->getNext ();
 			cout << temp << "\n";
 		}
-
+		cout<<"test point 5\n";
 		cout << "\n\n\n";
 	}
 
